@@ -166,45 +166,114 @@ class Tree {
     this.preOrderForEach(callback, node.right);
   }
 
-  inOrderForEach(callback,node = this.root) {
-    if (node === null) return ;
+  inOrderForEach(callback, node = this.root) {
+    if (node === null) return;
     this.preOrderForEach(callback, node.left);
-    callback(node.data)
+    callback(node.data);
     this.preOrderForEach(callback, node.right);
   }
 
-  postOrderForEach(callback , node = this.root) {
-    if (node === null) return ;
-    this.postOrderForEach(callback, node.left)
+  postOrderForEach(callback, node = this.root) {
+    if (node === null) return;
+    this.postOrderForEach(callback, node.left);
     this.preOrderForEach(callback, node.right);
-    callback(node.data)
+    callback(node.data);
   }
 
   height(value) {
-    let Is_ValueFound = false
-    let level = 0
-    let Current = this.root
-    while(!Is_ValueFound) {
-      if (value > Current.data) {
-        Current = Current.right
-        level ++
+    if (this.root === null) {
+      return null;
+    }
+
+    let queue = [this.root];
+    let targetNode = null;
+
+    while (queue.length > 0) {
+      let current = queue.shift();
+
+      if (current.data === value) {
+        targetNode = current;
+        break;
       }
-      else if (value < Current.data) {
-        Current = Current.left
-        level ++
-      } 
-      else if (value === Current.data) {
-        return level
+
+      if (current.left) queue.push(current.left);
+      if (current.right) queue.push(current.right);
+    }
+
+    if (!targetNode) {
+      return -1;
+    }
+
+    let height = -1;
+    queue = [targetNode];
+
+    while (queue.length > 0) {
+      let levelSize = queue.length;
+      height++;
+
+      for (let i = 0; i < levelSize; i++) {
+        let node = queue.shift();
+
+        if (node.left) queue.push(node.left);
+        if (node.right) queue.push(node.right);
       }
     }
-    return "Value to found"
+
+    return height;
   }
 
-  z
+  depth(value) {
+    if (this.root === null) {
+      return "Tree hasn't built yet";
+    }
+    let Is_ValueFound = false;
+    let level = 0;
+    let Current = this.root;
+    while (!Is_ValueFound) {
+      if (value > Current.data) {
+        Current = Current.right;
+        level++;
+      } else if (value < Current.data) {
+        Current = Current.left;
+        level++;
+      } else if (value === Current.data) {
+        return level;
+      }
+    }
+    return "Value to found";
+  }
+
+  isBalanced() {
+    const node = this.root;
+    const leftheight = this.height(node.left);
+    const rightheight = this.height(node.right);
+
+    if (Math.abs(leftheight - rightheight) > 1) {
+      return false;
+    }
+
+    return true;
+  }
+
+  rebalance() {
+    const New_Array = [];
+    if (!this.isBalanced()) {
+      const sortedArray = this.inOrderForEach((data) => New_Array.push(data));
+      return sortedArray;
+    }
+  }
 }
 
-const tree = new Tree([40, 20, 10, 30, 60, 50, 70, 65, 80]);
+function randomnumbergenarate(min, max) {
+  const Randomnumber = [];
+  for (let i = 0; i <= 20; i++) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    Randomnumber.push(Math.floor(Math.random() * (max - min + 1)) + min);
+  }
+  return Randomnumber;
+}
 
-tree.prettyPrint();
+const tree = new Tree(randomnumbergenarate(0,100));
 
-
+tree.prettyPrint()
