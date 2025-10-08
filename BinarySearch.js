@@ -129,8 +129,82 @@ class Tree {
       this.prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
     }
   }
+
+  find(value) {
+    let Current = this.root;
+
+    while (Current) {
+      if (Current.data > value) {
+        Current = Current.left;
+      } else if (Current.data < value) {
+        Current = Current.right;
+      } else if (Current.data === value) {
+        return Current;
+      } else {
+        break;
+      }
+    }
+    return "Value not found";
+  }
+
+  levelOrderForEach(callback) {
+    const queue = [this.root];
+
+    while (queue.length > 0) {
+      const current = queue.shift();
+      callback(current.data);
+      if (current.left) queue.push(current.left);
+      if (current.right) queue.push(current.right);
+    }
+  }
+
+  preOrderForEach(callback, node = this.root) {
+    if (node === null) return;
+
+    callback(node.data);
+    this.preOrderForEach(callback, node.left);
+    this.preOrderForEach(callback, node.right);
+  }
+
+  inOrderForEach(callback,node = this.root) {
+    if (node === null) return ;
+    this.preOrderForEach(callback, node.left);
+    callback(node.data)
+    this.preOrderForEach(callback, node.right);
+  }
+
+  postOrderForEach(callback , node = this.root) {
+    if (node === null) return ;
+    this.postOrderForEach(callback, node.left)
+    this.preOrderForEach(callback, node.right);
+    callback(node.data)
+  }
+
+  height(value) {
+    let Is_ValueFound = false
+    let level = 0
+    let Current = this.root
+    while(!Is_ValueFound) {
+      if (value > Current.data) {
+        Current = Current.right
+        level ++
+      }
+      else if (value < Current.data) {
+        Current = Current.left
+        level ++
+      } 
+      else if (value === Current.data) {
+        return level
+      }
+    }
+    return "Value to found"
+  }
+
+  z
 }
 
 const tree = new Tree([40, 20, 10, 30, 60, 50, 70, 65, 80]);
+
+tree.prettyPrint();
 
 
